@@ -16,9 +16,11 @@ export const updateProfile = expressAsyncHandler(async (req, res) => {
 
   const result = await uploadToCloudinary(base64);
 
+  console.log(result);
+
   const updatedUser = await UserModel.findByIdAndUpdate(
     userId,
-    { profilePicture: result.url },
+    { profilePicture: result },
     { new: true }
   ).select("-password");
 
