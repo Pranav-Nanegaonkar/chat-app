@@ -13,6 +13,7 @@ import {
   clearRefreshTokenFromCookie,
   REFRESH_PATH,
 } from "../utils/cookies.js";
+
 function getErrorLocation(stack) {
   if (!stack) return null;
 
@@ -91,6 +92,7 @@ function handleJwtError(res, error) {
   if (error instanceof jwt.TokenExpiredError) {
     return res.status(UNAUTHORIZED).json({
       status: UNAUTHORIZED,
+       type: "jwt_expired",
       message: "UNAUTHORIZED",
     });
   }
@@ -99,6 +101,7 @@ function handleJwtError(res, error) {
   if (error instanceof jwt.JsonWebTokenError) {
     return res.status(UNAUTHORIZED).json({
       status: UNAUTHORIZED,
+      type: "jwt_invalid",
       message: "UNAUTHORIZED",
     });
   }
@@ -107,6 +110,7 @@ function handleJwtError(res, error) {
   if (err instanceof jwt.NotBeforeError) {
     return res.status(401).json({
       status: "401",
+      type: "jwt_not_active",
       message: "Token not active yet.",
     });
   }

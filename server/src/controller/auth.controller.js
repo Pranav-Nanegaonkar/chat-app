@@ -17,8 +17,8 @@ import {
 
 const signupSchema = z.object({
   email: z.string().email(),
-  fullName: z.string().min(3).max(30).optional(),
   password: z.string().min(6),
+  fullName: z.string().optional(),
 });
 
 const loginSchema = z.object({
@@ -83,7 +83,7 @@ export const checkAuth = expressAsyncHandler((req, res) => {
   const user = req.user;
   AppAssert(user, "Error in checkAuth", UNAUTHORIZED);
 
-  res.status(OK).json(user);
+  res.status(OK).json({ success: true, user });
 });
 
 export const refresh = expressAsyncHandler(async (req, res) => {
