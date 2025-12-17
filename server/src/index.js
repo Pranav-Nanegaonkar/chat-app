@@ -16,8 +16,8 @@ import compression from "compression";
 import logger from "./utils/logger.js";
 import { morganLogger } from "./utils/morganLogger.js";
 import cors from "cors";
+import { app, server } from "./utils/socket.js";
 dotenv.config();
-const app = express();
 
 // Connect to Database
 connectDB();
@@ -51,7 +51,7 @@ app.use("/api/message", isLoggedIn, messageRouter);
 app.use(globalErrorHandler);
 app.use(notFoundHandler);
 
-app.listen(PORT, () => {
-  logger.info("Server started on port 7000");
+server.listen(PORT, () => {
+  // logger.info("Server started on port 7000");
   console.log(`Server is running on port http://localhost:${PORT}`);
 });

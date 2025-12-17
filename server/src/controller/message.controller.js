@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 
 const sendMessageSchema = z.object({
   text: z.string().optional(),
-  image: z.string().optional(),
+  image: z.string().optional().nullable(),
 });
 
 export const getMessages = expressAsyncHandler(async (req, res) => {

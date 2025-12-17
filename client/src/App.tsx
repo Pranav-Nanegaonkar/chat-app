@@ -1,5 +1,5 @@
 import type React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
@@ -7,14 +7,15 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import { useAuthStore } from "./store/useAuthStore";
+import { useThemeStore } from "./store/useThemeStore";
 import { useEffect } from "react";
-import { Loader } from "lucide-react";
+
 import { Toaster } from "react-hot-toast";
 import Test from "./pages/Test";
 import ProtectedRoute from "./components/ProtectedRoute";
 const App: React.FC = () => {
-  const { checkAuth, isCheckingAuth, authUser } = useAuthStore();
-
+  const { checkAuth } = useAuthStore();
+  const { theme } = useThemeStore();
   useEffect(() => {
     checkAuth();
   }, []);
@@ -27,14 +28,18 @@ const App: React.FC = () => {
   //   );
   // }
   return (
-    <div>
+    <div data-theme={theme}>
       <Navbar />
 
       <Routes>
         <Route
           path="/"
           // element={authUser ? <HomePage /> : <Navigate to="/login" />}
-          element={<ProtectedRoute><HomePage /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/signup"
@@ -50,7 +55,11 @@ const App: React.FC = () => {
         <Route
           path="/profile"
           // element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
-          element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
         />
         <Route path="/test" element={<Test />} />
       </Routes>

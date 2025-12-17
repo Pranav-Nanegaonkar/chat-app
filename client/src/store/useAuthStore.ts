@@ -1,9 +1,12 @@
 // src/store/useAuthStore.ts
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 import api from "../utils/api";
 import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
+
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 /* --------------------------- USER SCHEMA TYPE --------------------------- */
 export type UserSchemaType = {
@@ -42,24 +45,31 @@ type StoreTypes = {
   isLoggingIn: boolean;
   isCheckingAuth: boolean;
   isUpdatingProfile: boolean;
+  onlineUsers: [];
+  socket: any;
 
   checkAuth: () => Promise<{ success: boolean }>;
   signup: (formData: SignupFormData) => Promise<{ success: boolean }>;
   login: (formData: LoginFormData) => Promise<{ success: boolean }>;
   logout: () => Promise<{ success: boolean }>;
   updateProfile: (updateData: any) => Promise<void>;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
 };
 
 /* ---------------------------- STORE IMPLEMENTATION ---------------------------- */
 
 export const useAuthStore = create<StoreTypes>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     authUser: null,
     isCheckingAuth: true,
 
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
+
+    onlineUsers: [],
+    socket: null,
 
     /* ----------------------- CHECK AUTH ----------------------- */
     checkAuth: async () => {
@@ -71,6 +81,7 @@ export const useAuthStore = create<StoreTypes>()(
         // User exists
         if (data?.user) {
           set({ authUser: data.user });
+          get().connectSocket();
           return { success: true };
         }
 
@@ -104,6 +115,7 @@ export const useAuthStore = create<StoreTypes>()(
         set({ authUser: data.user });
 
         toast.success("Account created successfully!");
+        get().connectSocket();
         return { success: true };
       } catch (error) {
         console.log(
@@ -131,6 +143,9 @@ export const useAuthStore = create<StoreTypes>()(
         set({ authUser: data.user });
 
         toast.success("Logged in successfully!");
+
+        get().connectSocket();
+
         return { success: true };
       } catch (error) {
         console.log(
@@ -157,6 +172,7 @@ export const useAuthStore = create<StoreTypes>()(
         set({ authUser: null });
         toast.success("Logged out successfully");
 
+        get().disconnectSocket();
         return { success: true };
       } catch (error) {
         console.log(
@@ -175,7 +191,7 @@ export const useAuthStore = create<StoreTypes>()(
       set({ isUpdatingProfile: true });
       try {
         console.log(updateData);
-        
+
         const { data } = await api.put("/user/profile", updateData);
         set({ authUser: data.user });
         toast.success("Profile updated successfully!");
@@ -190,6 +206,21 @@ export const useAuthStore = create<StoreTypes>()(
       } finally {
         set({ isUpdatingProfile: false });
       }
+    },
+
+    connectSocket: () => {
+      const { authUser } = get();
+
+      if (!authUser || get().socket?.connected) return;
+
+      const socket = io(BASE_URL);
+
+      set({ socket: socket });
+
+      socket.connect();
+    },
+    disconnectSocket: () => {
+      if (get().socket?.connected) get().socket?.disconnect();
     },
   }))
 );
