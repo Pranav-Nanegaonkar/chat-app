@@ -5,6 +5,7 @@ import z from "zod";
 import { uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 import { AppAssert } from "../utils/AppAssert.js";
 import mongoose from "mongoose";
+import { getReciverSocketId, io } from "../utils/socket.js";
 
 const sendMessageSchema = z.object({
   text: z.string().optional(),
@@ -59,7 +60,11 @@ export const sendMessage = expressAsyncHandler(async (req, res) => {
 
   await newMessage.save();
 
-  // todo: realtime functionality using socket io
+  // donetodo: realtime functionality using socket io
+  const reciverSocketId = getReciverSocketId(receiverId);
+  if (reciverSocketId) {
+    io.to(reciverSocketId).emit("newMessage", newMessage);
+  }
 
   res.status(CREATED).json(newMessage);
 });

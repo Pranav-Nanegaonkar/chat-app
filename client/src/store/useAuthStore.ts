@@ -9,6 +9,7 @@ import { io } from "socket.io-client";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 /* --------------------------- USER SCHEMA TYPE --------------------------- */
+
 export type UserSchemaType = {
   _id: string;
   email: string;
@@ -19,6 +20,7 @@ export type UserSchemaType = {
 };
 
 /* ---------------------------- ERROR TYPE ---------------------------- */
+
 export type ErrorSchemaType = {
   status: number;
   type: string;
@@ -213,12 +215,23 @@ export const useAuthStore = create<StoreTypes>()(
 
       if (!authUser || get().socket?.connected) return;
 
-      const socket = io(BASE_URL);
+      const socket = io(BASE_URL, {
+        query: {
+          userId: authUser._id,
+        },
+      });
 
       set({ socket: socket });
 
+      // console.log(socket);
+
       socket.connect();
+
+      socket.on("getOnlineUsers", (userIds) => {
+        set({ onlineUsers: userIds });
+      });
     },
+
     disconnectSocket: () => {
       if (get().socket?.connected) get().socket?.disconnect();
     },

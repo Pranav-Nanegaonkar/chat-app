@@ -2,6 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import api from "../utils/api";
 import type { AxiosError } from "axios";
+import { useAuthStore } from "./useAuthStore";
 
 interface ChatStoreTypes {
   messages:
@@ -46,6 +47,8 @@ interface ChatStoreTypes {
   getMessages: (userId: any) => void;
   setSelectedUser: (selectedUser: any) => void;
   sendMessage: (messageData: any) => void;
+  subscribeToMessages: () => void;
+  unsubscribeFromMessages: () => void;
 }
 
 export const useChatStore = create<ChatStoreTypes>((set, get) => ({
@@ -118,6 +121,26 @@ export const useChatStore = create<ChatStoreTypes>((set, get) => ({
       toast.error("Failed to get Users");
       //   return { success: false };
     }
+  },
+
+  subscribeToMessages: () => {
+    const { selectedUser } = get();
+
+    if (!selectedUser) return;
+
+    const { socket } = useAuthStore();
+
+    // todo : optimize this
+    socket.on("newMessage", (newMessage: any) => {
+      // @ts-ignore
+      set({ messages: [...get().messages, newMessage] });
+    });
+  },
+
+  unsubscribeFromMessages: () => {
+    const { socket } = useAuthStore();
+
+    socket.off("newMessage");
   },
 
   // todo optimise it

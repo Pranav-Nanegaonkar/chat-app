@@ -1,16 +1,18 @@
+import { NODE_ENV } from "../constants/env.js";
+
 // Cookie options for production environment
 export const accessTokenCookieDev = {
   httpOnly: true, // Prevent JavaScript access (protects against XSS)
-  secure: false, //  Off in development (localhost is not HTTPS)
-  sameSite: "lax", // Allows redirects + works in dev environment
+  secure: NODE_ENV === "development" ? false : true, //  Off in development (localhost is not HTTPS)
+  sameSite: NODE_ENV === "development" ? "lax" : "none", // Allows redirects + works in dev environment
   path: "/", // Cookie is valid for entire site
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
 export const refreshTokenCookieDev = {
   httpOnly: true,
-  secure: false,
-  sameSite: "lax",
+  secure: NODE_ENV === "development" ? false : true, // false
+  sameSite: NODE_ENV === "development" ? "lax" : "none", // lax
   path: "/api/auth/refresh", //  restrict usage to refresh endpoint
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };

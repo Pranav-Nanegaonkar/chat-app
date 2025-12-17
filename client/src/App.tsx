@@ -14,11 +14,15 @@ import { Toaster } from "react-hot-toast";
 import Test from "./pages/Test";
 import ProtectedRoute from "./components/ProtectedRoute";
 const App: React.FC = () => {
-  const { checkAuth } = useAuthStore();
+  const { checkAuth, onlineUsers } = useAuthStore();
   const { theme } = useThemeStore();
   useEffect(() => {
     checkAuth();
   }, []);
+
+
+  console.log(onlineUsers);
+
 
   // if (isCheckingAuth && authUser === null) {
   //   return (

@@ -1,21 +1,21 @@
 import express from "express";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import morgan from "morgan";
+import compression from "compression";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import authRouter from "./routes/auth.routes.js";
 import { connectDB } from "./config/db.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import { CLIENT_URL, PORT } from "./constants/env.js";
 import { notFoundHandler } from "./middleware/notFoundHandler.js";
-import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes.js";
 import fileUpload from "express-fileupload";
 import { isLoggedIn } from "./middleware/auth.middleware.js";
 import messageRouter from "./routes/message.routes.js";
-import helmet from "helmet";
-import morgan from "morgan";
-import compression from "compression";
 import logger from "./utils/logger.js";
 import { morganLogger } from "./utils/morganLogger.js";
-import cors from "cors";
 import { app, server } from "./utils/socket.js";
 dotenv.config();
 
@@ -26,7 +26,7 @@ connectDB();
 app.use(helmet());
 app.use(
   cors({
-    origin: [CLIENT_URL],
+    origin: [CLIENT_URL,"https://qn4jvf18-5173.inc1.devtunnels.ms"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
