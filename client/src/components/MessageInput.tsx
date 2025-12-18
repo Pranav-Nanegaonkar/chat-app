@@ -3,10 +3,10 @@ import { useChatStore } from "../store/useChatStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-interface SendMessagePayload {
-    text: string;
-    image: string | null;
-}
+// interface SendMessagePayload {
+//     text: string;
+//     image: string | null;
+// }
 
 const MessageInput: React.FC = () => {
     const [text, setText] = useState<string>("");

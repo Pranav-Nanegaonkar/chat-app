@@ -15,15 +15,18 @@ const ChatHeader = () => {
                     <div className="avatar">
                         <div className="size-10 rounded-full relative">
 
-                            <img src={selectedUser.profilePicture || "/avatar.png"} alt={selectedUser.fullName} />
+                            <img src={selectedUser?.profilePicture || "/avatar.png"} alt={selectedUser?.fullName} />
                         </div>
                     </div>
 
                     {/* User info */}
                     <div>
-                        <h3 className="font-medium">{selectedUser.fullName}</h3>
+                        <h3 className="font-medium">{selectedUser?.fullName}</h3>
                         <p className="text-sm text-base-content/70">
-                            {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+
+                            {
+                                // @ts-ignore
+                                onlineUsers.includes(selectedUser?._id) ? "Online" : "Offline"}
                         </p>
                     </div>
                 </div>

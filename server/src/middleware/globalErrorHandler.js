@@ -144,11 +144,11 @@ const globalErrorHandler = (error, req, res, next) => {
   }
 
   // logger
-  logger.error({
-    message: error.message,
-    stack: error.stack,
-    route: req.originalUrl,
-  });
+  // logger.error({
+  //   message: error.message,
+  //   stack: error.stack,
+  //   route: req.originalUrl,
+  // });
 
   // UNKNOWN / INTERNAL ERROR
   return res.status(INTERNAL_SERVER_ERROR).json({
