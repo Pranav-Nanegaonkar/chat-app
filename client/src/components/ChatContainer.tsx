@@ -1,13 +1,12 @@
 import { useChatStore } from "../store/useChatStore";
 import { useEffect, useRef } from "react";
 
-
-import MessageSkeleton from "./skeletons/MessageSkeleton";
-import { useAuthStore } from "../store/useAuthStore";
-
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
+import MessageSkeleton from "./skeletons/MessageSkeleton";
+import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../utils/utils";
+
 
 const ChatContainer = () => {
   const {
@@ -62,7 +61,7 @@ const ChatContainer = () => {
                 <img
                   src={
                     message.senderId === authUser?._id
-                      ? authUser?.profilePicture || "/avatar.png"
+                      ? authUser.profilePicture || "/avatar.png"
                       : selectedUser?.profilePicture || "/avatar.png"
                   }
                   alt="profile pic"

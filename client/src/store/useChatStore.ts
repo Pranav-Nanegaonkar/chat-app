@@ -128,21 +128,22 @@ export const useChatStore = create<ChatStoreTypes>((set, get) => ({
 
     if (!selectedUser) return;
 
-    const { socket } = useAuthStore();
+    const socket = useAuthStore.getState().socket;
 
-    // todo : optimize this
+    // donetodo : optimize this
     socket.on("newMessage", (newMessage: any) => {
+      if (newMessage.senderId !== selectedUser._id) return;
       // @ts-ignore
       set({ messages: [...get().messages, newMessage] });
     });
   },
 
   unsubscribeFromMessages: () => {
-    const { socket } = useAuthStore();
+    const socket = useAuthStore.getState().socket;
 
     socket.off("newMessage");
   },
 
-  // todo optimise it
+ 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));
